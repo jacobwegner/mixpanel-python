@@ -471,7 +471,6 @@ class BufferedConsumer(object):
                 self._flush(endpoint, self._buffers[endpoint])
 
     def _flush(self, endpoint, buf, api_key=None):
-        buf = self._buffers[endpoint]
         while buf:
             batch = buf[:self._max_size]
             batch_json = '[{0}]'.format(','.join(batch))
