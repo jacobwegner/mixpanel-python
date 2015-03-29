@@ -15,7 +15,7 @@ import time
 import urllib
 import urllib2
 
-__version__ = '4.0.2'
+__version__ = '4.0.3dev1'
 VERSION = __version__  # TODO: remove when bumping major version.
 
 
