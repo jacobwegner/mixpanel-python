@@ -478,8 +478,9 @@ class BufferedConsumer(object):
             try:
                 self._consumer.send(endpoint, batch_json, api_key)
             except MixpanelException as e:
-                e.message = 'batch_json'
+                e.batch_json = batch_json
                 e.endpoint = endpoint
+                raise e
             buf = buf[self._max_size:]
         if not api_key:
             self._buffers[endpoint] = buf
