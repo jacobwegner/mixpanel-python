@@ -415,7 +415,7 @@ class BufferedConsumer(object):
         }
         self._max_size = min(50, max_size)
 
-    def send(self, endpoint, json_message):
+    def send(self, endpoint, json_message, api_key=None):
         """
         Record an event or a profile update. Calls to send() will store
         the given message in memory, and (when enough messages have been stored)
@@ -437,9 +437,9 @@ class BufferedConsumer(object):
         buf = self._buffers[endpoint]
         buf.append(json_message)
         if len(buf) >= self._max_size:
-            self._flush_endpoint(endpoint)
+            self._flush_endpoint(endpoint, api_key)
 
-    def flush(self):
+    def flush(self, api_key=None):
         """
         Send all remaining messages to Mixpanel.
 
@@ -456,15 +456,15 @@ class BufferedConsumer(object):
         :raises: MixpanelException
         """
         for endpoint in self._buffers.keys():
-            self._flush_endpoint(endpoint)
+            self._flush_endpoint(endpoint, api_key=api_key)
 
-    def _flush_endpoint(self, endpoint):
+    def _flush_endpoint(self, endpoint, api_key):
         buf = self._buffers[endpoint]
         while buf:
             batch = buf[:self._max_size]
             batch_json = '[{0}]'.format(','.join(batch))
             try:
-                self._consumer.send(endpoint, batch_json)
+                self._consumer.send(endpoint, batch_json, api_key=api_key)
             except MixpanelException as e:
                 e.message = 'batch_json'
                 e.endpoint = endpoint
